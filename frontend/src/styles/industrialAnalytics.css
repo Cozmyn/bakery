@@ -1,0 +1,229 @@
+/*
+  Industrial Analytics UI (scoped)
+  - Uses existing design tokens from app.css (light/dark via [data-theme])
+  - No global html/body styles
+  - All selectors scoped under .iaRoot
+*/
+
+.iaRoot{
+  /* Scale to available width (no centered narrow container) */
+  width: 100%;
+  min-width: 0;
+
+  /* Typography: slightly larger, consistent across the Analytics pages */
+  --ia-font: clamp(14px, 0.50vw, 16px);
+  font-size: var(--ia-font);
+  line-height: 1.15;
+
+  /* Denser layout (fit more on a line) */
+  --ia-gap: 6px;
+  /* Compact tiles so the middle area does not breathe too much on wide screens. */
+  --ia-tile-min: clamp(148px, 7vw, 164px);
+  --ia-tile-max: 172px;
+  --ia-frozen-w: clamp(220px, 18vw, 300px);
+}
+
+/* No-bold requirement for Analytics (scoped to this page only) */
+.analyticsPage,
+.analyticsPage *{
+  font-weight: 400;
+}
+
+/* Make Analytics header typography consistent (no oversized title/subtitle) */
+.analyticsPage .pageTitle{ font-size: inherit; letter-spacing: -0.02em; }
+.analyticsPage .pageSubtitle{ font-size: inherit; max-width: none; margin-top: 0; }
+.analyticsPage.page{ gap: 10px; }
+.analyticsPage .pageHeader{ gap: 8px; }
+
+/* Force Analytics cards to use all available width in the main container */
+.analyticsPage .card{
+  width: 100%;
+  max-width: none;
+}
+
+/* Avoid browser default bold on headings inside the analytics page */
+.analyticsPage h1,
+.analyticsPage h2,
+.analyticsPage h3,
+.analyticsPage h4,
+.analyticsPage h5,
+.analyticsPage h6{
+  font-weight: 400;
+}
+
+.iaRoot .mono{ font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.iaRoot .muted{ color: var(--muted); }
+
+.iaRoot .iaPanel{
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  border-radius: var(--radius2);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.iaRoot .iaToolbar{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.iaRoot .iaTitle{
+  letter-spacing: -0.02em;
+  font-size: inherit;
+}
+
+.iaRoot .iaBadge{
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: inherit;
+  border: 1px solid rgba(37,99,235,0.22);
+  background: rgba(37,99,235,0.10);
+  color: var(--text);
+}
+
+.iaRoot .iaBadgeWarn{
+  border-color: rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.14);
+}
+
+.iaRoot .iaLegend{
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.0), rgba(255,255,255,0.02));
+}
+
+.iaRoot .iaList{
+  padding: 8px;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: none;
+  overflow: visible;
+}
+
+.iaRoot .iaRow{
+  display:grid;
+  grid-template-columns: var(--ia-frozen-w) minmax(0, 1fr);
+  gap: var(--ia-gap);
+  align-items: stretch;
+}
+
+.iaRoot .iaFrozen{
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow2);
+  padding: 8px;
+}
+
+.iaRoot .iaFrozenTop{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.iaRoot .iaFrozenMain{
+  letter-spacing: -0.02em;
+  font-size: inherit;
+}
+
+.iaRoot .iaFrozenSub{
+  margin-top: 6px;
+  display:flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.iaRoot .iaStamp{
+  display:grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items:center;
+  justify-content: start;
+  gap: 6px;
+}
+
+.iaRoot .iaStamp .k{
+  color: var(--muted);
+  font-size: inherit;
+}
+
+.iaRoot .iaStamp .v{
+  font-variant-numeric: tabular-nums;
+}
+
+.iaRoot .iaTiles{
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius);
+  padding: 6px;
+  overflow: visible;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--ia-tile-min), var(--ia-tile-max)));
+  justify-content: start;
+  align-content: start;
+  gap: 6px;
+}
+
+.iaRoot .iaTileWrap{ width: auto; }
+.iaRoot .iaTileWrap.iaPend{ opacity: 0.75; }
+
+/* Tiles (bread position cards) */
+.iaRoot .tile{
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow2);
+}
+
+/* Override global .tileTop sizing inside Analytics */
+.iaRoot .tileTop{
+  font-size: inherit;
+  color: var(--muted);
+}
+
+.iaRoot .tileTop{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+/* Pareto */
+.iaRoot .iaParetoTile{ width: 100%; }
+.iaRoot .iaBarBg{
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(148,163,184,0.22);
+  overflow: hidden;
+}
+.iaRoot .iaBarFill{
+  height: 100%;
+  background: rgba(37,99,235,0.55);
+}
+
+/* Small helpers */
+
+.iaRoot .iaDivider{ height: 1px; background: var(--border); margin: 8px 0; }
+
+/* Do not shrink text for "muted" inside tiles (keep consistent size) */
+.iaRoot .tile .muted{ font-size: inherit; }
+
+@media (max-width: 980px){
+  .iaRoot{ --ia-frozen-w: 210px; --ia-tile-min: 150px; --ia-tile-max: 160px; }
+}
+
+@media (max-width: 760px){
+  .iaRoot{ --ia-frozen-w: 180px; --ia-tile-min: 148px; --ia-tile-max: 1fr; }
+  .iaRoot .iaRow{ grid-template-columns: 1fr; }
+  .iaRoot .iaTiles{ grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); }
+}
