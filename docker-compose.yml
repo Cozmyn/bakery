@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app}
+      POSTGRES_DB: ${POSTGRES_DB:-bakery}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-bakery}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: ./backend
+    environment:
+      ConnectionStrings__Db: Host=db;Port=5432;Database=${POSTGRES_DB:-bakery};Username=${POSTGRES_USER:-app};Password=${POSTGRES_PASSWORD:-app}
+      Redis__ConnectionString: redis:6379
+      Jwt__Issuer: ${JWT_ISSUER:-bakery.app}
+      Jwt__Audience: ${JWT_AUDIENCE:-bakery.app}
+      Jwt__Secret: ${JWT_SECRET:-CHANGE_ME_SUPER_SECRET_32CHARS_MIN}
+      Vis__ImageTtlSeconds: ${VIS_IMAGE_TTL_SECONDS:-120}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8081
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8081
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
